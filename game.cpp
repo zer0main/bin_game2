@@ -57,9 +57,9 @@ void game_with_time() {
 
 bool check_win(GameDesk& e, int a) {
     if (a >=  e.score()) {
-        return 1;
+        return 0;
     }
-    return 0;
+    return 1;
 }
 
 void play(GameDesk& a) {
