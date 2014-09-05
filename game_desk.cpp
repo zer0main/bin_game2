@@ -21,7 +21,11 @@ void GameDesk::replace(Points& a) {
 void GameDesk::output() {
     for (int i = rownumber_-1; i >= 0; i--) {
         for (int x = 0; x < rownumber_; x++) {
-            std::cout << desk_[i * rownumber_ + x] << " ";
+            char prev_fill = std::cout.fill(' ');
+            int prev_width = std::cout.width(5);
+            std::cout << desk_[i * rownumber_ + x];
+            std::cout.width(prev_width);
+            std::cout.fill(prev_fill);
         }
         std::cout << std::endl;
     }
