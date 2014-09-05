@@ -8,13 +8,16 @@
 
 #include <vector>
 
+class GameDesk;
+
+typedef long long unsigned int Int;
+typedef std::vector <Int> Ints;
+
 struct Point {
     int col;
     int row;
 
-    bool check_index(col, row);
-
-    bool check_range(col, row);
+    void set_index(int, int);
 };
 
 struct Points {
@@ -22,26 +25,34 @@ struct Points {
     Point p2;
 
     void input();
-    bool check_step();
+    
+    bool check_range(int);
+
+    bool check_index(int);
+    
+    bool check_step(GameDesk&);
 
 };
 
 class GameDesk {
 public:
+    int get_rownumber();
+
+    Ints get_desk();
+    
     bool check_fail();
 
     GameDesk(int); 
     
-    void replace(const Points& points);
+    void replace(Points&);
     
     void output();
 
     long long int score();
 
 private:
-    typedef long long unsigned int Int;
-    typedef std::vector<Int> Ints;
     Ints desk_;
+    int rownumber_;
 };        
 
 

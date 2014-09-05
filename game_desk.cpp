@@ -1,28 +1,27 @@
-#include <game_desk.hpp>
-#include <random>
+#include <stdlib.h>
+#include <math.h>
 #include <iostream>
-#include <math>
 
-int rowNumber = sqrt(GameDesk::desk_.size());
+#include "game_desk.hpp"
 
-void GameDesk::replace(Points &a) {
-    GameDesk::desk_[a->p2.col * rowNumber + a->p2.row] *= 2;
-    while (a->p1.col < rowNumber-1) {
-        GameDesk::desk_[a->p1.col * rowNumber + a->p1.row] = GameDesk::desk_[++a->p1.col * rowNumber + a->p1.row];
+void GameDesk::replace(Points& a) {
+    desk_[a.p2.col * rownumber_ + a.p2.row] *= 2;
+    while (a.p1.col < rownumber_-1) {
+        desk_[a.p1.col * rownumber_ + a.p1.row] = desk_[++a.p1.col * rownumber_ + a.p1.row];
     }
     
     if (rand() > (RAND_MAX / 2)) {
-        GameDesk::desk_[a->p1.col * rowNumber + a->p1.row] = 1;
+        desk_[a.p1.col * rownumber_ + a.p1.row] = 1;
     }
     else {
-        GameDesk::desk_[a->p1.col * rowNumber + a->p1.row] = 2;
+        desk_[a.p1.col * rownumber_ + a.p1.row] = 2;
     }
 }
 
 void GameDesk::output() {
-    for (int i = rowNumber-1; i >= 0; i--) {
-        for (int x = 0; x < rowNumber; x++) {
-            std::cout << GameDesk::desk_[i * rowNumber + x];
+    for (int i = rownumber_-1; i >= 0; i--) {
+        for (int x = 0; x < rownumber_; x++) {
+            std::cout << desk_[i * rownumber_ + x];
         }
         std::cout << std::endl;
     }
@@ -31,9 +30,9 @@ void GameDesk::output() {
 long long int GameDesk::score() {
     int rowScore = 0;
     int allScore = 0;
-    for (int i = 0; i < rowNumber; i++) {
-        for (int x = 0; x < rowNumber; x++) {
-            rowScore += GameDesk::desk_[i * rowNumber + x];
+    for (int i = 0; i < rownumber_; i++) {
+        for (int x = 0; x < rownumber_; x++) {
+            rowScore += desk_[i * rownumber_ + x];
         }
         allScore += rowScore;
         rowScore = 0;
@@ -42,50 +41,93 @@ long long int GameDesk::score() {
 }
 
 bool GameDesk::check_fail() {
-    for (int i = 0; i < rowNumber; i++) {
-        for (int x = 0; x < rowNumber; x++) {
-            for (int y = 0; y < rowNumber; y++) {
-                for (int t = 0 t < rowNumber; t++) {
-                    Point *p1 = new Point;
-                    Point *p2 = new Point;
-                    p1->col = i;
-                    p1->row = x;
-                    p2->col = y;
-                    p2->row = t;
-                    Points *points = new Points;
-                    points->p1 = p1;
-                    points->p2 = p2;
-                    if (points->check_step()) {
+    Points *points = new Points;
+    for (int i = 0; i < rownumber_; i++) {
+        for (int x = 0; x < rownumber_; x++) {
+            for (int y = 0; y < rownumber_; y++) {
+                for (int t = 0; t < rownumber_; t++) {
+                    points->p1.set_index(i, x);
+                    points->p2.set_index(y, t);
+                    if (points->check_step(*this)) {
                         return 0;
                     }
                 }
             }
         }
     }
+    delete points;
     return 1;
 }
 
 GameDesk::GameDesk(int a) {
-    for (int i = 0; i < a; i++) {
-        for (int x= 0; x < a; x++) {
-            if (rand() <= (Rand_Max / 2)) {
-                GameDesk::desk_[i*a + x] = 1;
+    rownumber_ = a;
+    desk_.resize(a * a);
+    for (int i = 0; i < rownumber_; i++) {
+        for (int x = 0; x < rownumber_; x++) {
+            if (rand() <= (RAND_MAX / 2)) {
+                desk_[i * a + x] = 1;
             }
             else {
-                GameDesk::desk_[i*a + x] = 2;
+                desk_[i * a + x] = 2;
             }
         }
     }
 }
    
-Points::check_step() {
-    if (Point::check_index(p1.col, p1.row) && Point::check_index(p2.col, p2.row)) {
-        if (GameDesk::desk_[p1.col * rowNumber + p2.row] == GameDesk::desk_[p2.col * rowNumber + p2.row]) {
+int GameDesk::get_rownumber() {
+    return rownumber_;
+}
+
+Ints GameDesk::get_desk() {
+    return desk_;
+}
+
+bool Points::check_step(GameDesk& a) {
+    int rownumber = a.get_rownumber();
+    Ints desk_ = a.get_desk();
+    if (check_index(rownumber)) {
+        if (desk_[p1.col * rownumber + p1.row] == desk_[p2.col * rownumber + p2.row]) {
             return 1;
         }
         return 0;
     }
+    return 0;
 }
 
+bool Points::check_index(int max) {
+    if (check_range(max)) {
+        if ((p1.col == p2.col) && ((p1.row == p2.row + 1) || (p1.row == p2.row - 1))) {
+            return 1;
+        }
+        else if ((p1.row == p2.row) && ((p1.col == p2.col + 1) || (p1.col == p2.col - 1))) {
+            return 1;
+        }
+        return 0;
+    }
+    return 0;
+}
 
+bool Points::check_range(int max) {
+    if ((p1.row >= 0) && (p1.col >= 0) && (p2.row >= 0) && (p2.col >= 0)) {
+        if ((p1.row < max) && (p1.col < max) && (p2.row < max) && (p2.col < max)) {
+            return 1;
+        }
+        return 0;
+    }
+    return 0;
+}
 
+void Points::input() {
+    int i1, i2, i3, i4;
+    std::cout << "Enter index of number1: ";
+    std::cin >> i1 >> i2;
+    p1.set_index(i1, i2);
+    std::cout << "\nAnd of number2: ";
+    std::cin >> i3 >> i4;
+    p2.set_index(i3, i4);
+}
+ 
+void Point::set_index(int c, int r) {
+    col = c;
+    row = r;
+}
