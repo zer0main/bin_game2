@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include <math.h>
 #include <iostream>
+#include <limits>
 
 #include "game_desk.hpp"
 
@@ -89,12 +90,12 @@ Ints GameDesk::get_desk() {
 bool Points::check_step(GameDesk& a) {
     int rownumber = a.get_rownumber();
     Ints desk_ = a.get_desk();
-    if (check_index(rownumber)) {
-        if (desk_[p1.col * rownumber + p1.row] == desk_[p2.col * rownumber + p2.row]) {
-            return 1;
+        if (check_index(rownumber)) {
+            if (desk_[p1.col * rownumber + p1.row] == desk_[p2.col * rownumber + p2.row]) {
+                return 1;
         }
-        return 0;
-    }
+            return 0;
+        }
     return 0;
 }
 
@@ -124,10 +125,18 @@ bool Points::check_range(int max) {
 void Points::input() {
     int i1, i2, i3, i4;
     std::cout << "Enter index of number1: ";
-    std::cin >> i1 >> i2;
+    while (!(std::cin >> i1 >> i2)) {
+        std::cout << "Error: wrong index of number. Try again: " << std::endl;
+        std::cin.clear();
+        std::cin.ignore(std::numeric_limits<int>::max(), '\n');
+    }
     p1.set_index(i1, i2);
     std::cout << "\nAnd of number2: ";
-    std::cin >> i3 >> i4;
+    while (!(std::cin >> i3 >> i4)) {
+        std::cout << "Error: wrong index of number. Try again: " << std::endl;
+        std::cin.clear();
+        std::cin.ignore(std::numeric_limits<int>::max(), '\n');
+    }
     p2.set_index(i3, i4);
 }
  
