@@ -48,6 +48,12 @@ public:
     
     void output();
 
+    void finish();
+
+    void play();
+
+    bool check_win(int);
+
     long long int score();
 
 private:

@@ -1,13 +1,8 @@
 #include <time.h>
 #include <stdlib.h>
 #include <iostream>
+
 #include "game_desk.hpp"
-
-void play(GameDesk&);
-
-void finish(GameDesk&, bool);
-
-bool check_win(GameDesk&, int);
 
 void game_for_win() {
     int k, h;
@@ -18,10 +13,10 @@ void game_for_win() {
     std::cin >> h;
     GameDesk desk(h);
     desk.output();
-    while (!desk.check_fail() && !check_win(desk, k)) {
-        play(desk);
+    while (!desk.check_fail() && !desk.check_win(k)) {
+        desk.play();
     }
-    finish(desk, desk.check_fail());
+    desk.finish();
 }
 
 void game_for_score() {
@@ -32,9 +27,9 @@ void game_for_score() {
     GameDesk desk(k);
     desk.output();
     while (!desk.check_fail()) {
-        play(desk);
+        desk.play();
     }
-    finish(desk, desk.check_fail());
+    desk.finish();
 }
 
 void game_with_time() {
@@ -48,39 +43,11 @@ void game_with_time() {
     desk.output();
     int t = time(NULL);
     int t1 = 0;
-    while (!desk.check_fail() && (t1-t) * 60 <= k) {
-        play(desk);
+    while (!desk.check_fail() && (t1-t) <= k * 60) {
+        desk.play();
         int t1 = time(NULL);
     }
-    finish(desk, desk.check_fail());      
-}
-
-bool check_win(GameDesk& e, int a) {
-    if (a >=  e.score()) {
-        return 0;
-    }
-    return 1;
-}
-
-void play(GameDesk& a) {
-    Points points;
-    points.input();
-    if (points.check_step(a)) {
-        a.replace(points);
-        a.output();
-    }
-    else {
-        std::cout << "Error: wrong index of numbers." << std::endl;
-    }
-}
-
-void finish(GameDesk& a, bool h) {
-    if (h == true) {
-        std::cout << "You are looser... Your score is " << a.score() << std::endl;
-    }
-    else {
-        std::cout << "You are winner! Your score is " << a.score() << std::endl;
-    }
+    desk.finish();      
 }
 
 void help() {

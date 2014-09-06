@@ -1,5 +1,6 @@
 #include <stdlib.h>
 #include <time.h>
+
 #include "game_desk.hpp"
 
 int main(int argc, char *argv[])

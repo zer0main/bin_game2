@@ -135,3 +135,31 @@ void Point::set_index(int c, int r) {
     col = c;
     row = r;
 }
+
+void GameDesk::finish() {
+    if (check_fail()) {
+        std::cout << "You are looser... Your score is " << score() << std::endl;
+    }
+    else {
+        std::cout << "You are winner! Your score is " << score() << std::endl;
+    }
+}
+
+bool GameDesk::check_win(int max) {
+    if (max >= score()) {
+        return 0;
+    }
+    return 1;
+}
+
+void GameDesk::play() {
+    Points points;
+    points.input();
+    if (points.check_step(*this)) {
+        replace(points);
+        output();
+    }
+    else {
+        std::cout << "Error: wrong index of numbers." << std::endl;
+    }
+}
