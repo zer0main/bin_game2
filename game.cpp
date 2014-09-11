@@ -35,7 +35,12 @@ void game_for_score() {
     std::cout << "Choose the size of game desk please (not very big, "
              "depends on the size of your screen): ";
     int k;
-    std::cin >> k;
+    if (std::cin >> k) {
+    }
+    else {
+        std::cout << "Error. It is not a number" << std::endl;
+        return;
+    }
     GameDesk desk(k);
     desk.output();
     while (!desk.check_fail()) {
