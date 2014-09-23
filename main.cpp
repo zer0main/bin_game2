@@ -6,7 +6,10 @@
 int main(int argc, char *argv[])
 {
     srand(time(NULL));
-    if (*++argv[1] == 'w') {
+    if (argc == 1) {
+        help();
+    }
+    else if (*++argv[1] == 'w') {
         game_for_win();
     }
     else if (*argv[1] == 's') {
